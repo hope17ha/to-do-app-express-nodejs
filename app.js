@@ -3,6 +3,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { error } = require('console');
 
 const app = express();
 const port = 3000;
@@ -21,7 +22,14 @@ function getTasks(){
 }
 
 function saveTasks(tasks) {
-    fs.writeFileSync(dataPath, JSON.stringify(tasks, null, 2));
+    fs.writeFileSync(dataPath, JSON.stringify(tasks, null, 2), (error) => {
+        if (error){
+            console.error(error);
+            return res.status(500).send('Could not save tasks.');
+        } else {
+            res.redirect('/');
+        }
+    });
 }
 
 
@@ -44,6 +52,20 @@ app.post('/toggle', (req,res) => {
     res.redirect('/');
 
 });
+
+app.post('/delete', (req,res) => {
+    const tasks = getTasks();
+    const taskForDel = tasks.find ( task => task.id == req.body.id)
+    const idToDel = taskForDel.id;
+
+    const updatedTasks = tasks.filter( task => task.id !== idToDel);
+
+    saveTasks(updatedTasks);
+
+    res.redirect('/');
+})
+
+
 
 
 
