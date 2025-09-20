@@ -15,26 +15,33 @@ app.use(express.urlencoded ({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const dataPath = path.join(__dirname, 'data', 'tasks.json');
+const fsPromises = require('fs').promises;
 
-function getTasks(){
-    const data = fs.readFileSync(dataPath, 'utf8');
-    return JSON.parse(data);
+async function getTasks() {
+    try {
+        const data = await fsPromises.readFile(dataPath, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Error reading tasks:', error);
+        return [];
+    }
 }
 
-function saveTasks(tasks) {
-    fs.writeFileSync(dataPath, JSON.stringify(tasks, null, 2), (error) => {
-        if (error){
-            console.error(error);
-            return res.status(500).send('Could not save tasks.');
-        } else {
-            res.redirect('/');
-        }
+
+function saveTasks(tasks, callback) {
+    fs.writeFile(dataPath, JSON.stringify(tasks, null, 2), (err) => {
+      if (err) {
+        console.error('Error saving tasks:', err);
+        callback(err);
+      } else {
+        callback(null);
+      }
     });
-}
+  }
 
 
-app.get('/', (req, res) => {
-    const tasks = getTasks();
+app.get('/', async (req, res) => {
+    const tasks = await getTasks();
     res.render('index', {
         layout: path.join('layout', 'main'),
         tasks: tasks
@@ -42,36 +49,61 @@ app.get('/', (req, res) => {
      );
 });
 
-app.post('/toggle', (req,res) => {
-    const tasks = getTasks();
-    const task = tasks.find(task => task.id == req.body.id);
+app.post('/toggle', async (req,res) => {
+    const tasks = await getTasks();
+    const task = tasks.find(task => task.id == Number(req.body.id));
     if (task && task.completed !== undefined){
         task.completed = !task.completed;
-        saveTasks(tasks)
+        saveTasks(tasks, (error) => {
+            if (error){
+                return res.status(500).send('Failed to save task.');
+            }
+            res.redirect('/');
+        })
+    } else {
+        res.redirect('/');
     }
-    res.redirect('/');
+   
 
 });
 
-app.post('/delete', (req,res) => {
-    const tasks = getTasks();
-    const taskForDel = tasks.find ( task => task.id == req.body.id)
+app.post('/delete', async (req,res) => {
+    const tasks = await getTasks();
+    const taskForDel = tasks.find ( task => task.id == Number(req.body.id))
     const idToDel = taskForDel.id;
 
     const updatedTasks = tasks.filter( task => task.id !== idToDel);
 
-    saveTasks(updatedTasks);
+    saveTasks(updatedTasks, (error) => {
+        if (error){
+            return res.status(500).send('Failed to delete task.')
+        } 
+        res.redirect('/');
+    });
+    
 
-    res.redirect('/');
+})
+
+app.post('/add', async (req,res) => {
+    const tasks = await getTasks();
+    const lastId = tasks ? tasks.length : 0;
+    const taskToAdd = { id: lastId + 1 , title: req.body.title , completed: false};
+
+    const updatedTasks = [...tasks, taskToAdd];
+    saveTasks(updatedTasks, (error) => {
+        if (error) {
+            return res.status(500).send('Failed to save task.');
+        }
+        res.redirect('/');
+    });
+    
+
 })
 
 
 
 
 
-
-
-
 app.listen(port, () => {
-    console.log('Server is listening on  http://localhost:3000...');
+    console.log(`Server is listening on  http://localhost:${port}...`);
 })
