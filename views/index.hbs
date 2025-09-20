@@ -1,0 +1,24 @@
+<section class="add-task">
+    <form action="/add" method="POST">
+        <input type="text" name="title" placeholder="New task" required>
+        <button type="submit">Add task</button>
+    </form>
+</section>
+
+<section class="task-list">
+    <ul>
+        {{#each tasks}}
+        <li>
+            <form action="/toggle" method="POST">
+                <input type="hidden" name="id" value="{{this.id}}">
+                <input type="checkbox" name="completed" onchange="this.form.submit()" {{#if this.completed}} checked {{/if}}/>
+                <span class="{{#if this.completed}} completed {{/if}}">{{this.title}}</span>
+            </form>
+            <form action="/delete" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="{{this.id}}">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+        {{/each}}
+    </ul>
+</section>
