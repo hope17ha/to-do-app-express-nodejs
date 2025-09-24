@@ -4,6 +4,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { error } = require('console');
+const { v4: uuid } = require('uuid');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 3000;
@@ -15,7 +17,15 @@ app.use(express.urlencoded ({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const dataPath = path.join(__dirname, 'data', 'tasks.json');
+const userPath = path.join(__dirname, 'data', 'users.json');
 const fsPromises = require('fs').promises;
+const newId = uuid();
+
+async function hashPassword(password) {
+    const hash = await bcrypt.hash(password, 10);
+    console.log('Hashed password:', hash);
+}
+
 
 async function getTasks() {
     try {
@@ -37,7 +47,9 @@ function saveTasks(tasks, callback) {
         callback(null);
       }
     });
-  }
+  };
+
+
 
 
 app.get('/', async (req, res) => {
@@ -98,7 +110,14 @@ app.post('/add', async (req,res) => {
     });
     
 
+});
+
+app.get('/register', (req,res) => {
+    res.render('register', {
+        layout: path.join('layout', 'main')
+    })
 })
+
 
 
 
