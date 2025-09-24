@@ -47,6 +47,7 @@ A simple To-Do List web application built with **Node.js**, **Express**, and **H
 
 ## Project Structure
 
+```plaintext
 to-do-app-express-nodejs/
 ├── app.js                # Main entry point of the application
 ├── package.json          # Project dependencies and scripts
@@ -75,8 +76,10 @@ to-do-app-express-nodejs/
 │   └── layout/           # Layout templates
 │
 ├── public/               # Static files (CSS, images, client-side JS)
-
+│
+└── node_modules/         # Installed dependencies (auto-generated) 
 ```
+
 
 ## Usage
 
