@@ -47,24 +47,35 @@ A simple To-Do List web application built with **Node.js**, **Express**, and **H
 
 ## Project Structure
 
-```
-.
-├── app.js                  # Main application file
-├── middleware
-│   └── isAuth.js           # Authentication middleware
-│   └── getCurrentUser.js   # Middleware to attach current user to requests
-├── utils
-│   ├── tasks.js            # Task-related functions (get/save tasks, etc.)
-│   └── users.js            # User-related functions
-├── data
-│   └── tasks.json          # JSON file storing users' tasks
-├── public
-│   └── style.css           # CSS styles
-├── views
-│   ├── index.hbs           # Main tasks view
-│   └── layout
-│       └── main.hbs        # Main layout template
-└── README.md               # Project documentation
+to-do-app-express-nodejs/
+├── app.js                # Main entry point of the application
+├── package.json          # Project dependencies and scripts
+├── package-lock.json     # Dependency lock file
+├── README.md             # Project documentation
+├── style.css             # Global stylesheet
+├── taaaasks.json         # Example/extra tasks file (typo test file?)
+│
+├── data/                 # JSON data storage (mock database)
+│   ├── tasks.json        # Stores tasks data
+│   └── users.json        # Stores users data
+│
+├── middlewares/          # Express middlewares
+│   ├── getUser.js        # Middleware to get current user
+│   └── isAuth.js         # Middleware to check authentication
+│
+├── utils/                # Utility/helper functions
+│   ├── password.js       # Password hashing and verification
+│   ├── tasks.js          # Task-related helper functions
+│   └── users.js          # User-related helper functions
+│
+├── views/                # Handlebars (HBS) templates
+│   ├── index.hbs         # Home page
+│   ├── login.hbs         # Login form
+│   ├── register.hbs      # Registration form
+│   └── layout/           # Layout templates
+│
+├── public/               # Static files (CSS, images, client-side JS)
+
 ```
 
 ## Usage
