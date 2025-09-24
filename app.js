@@ -71,9 +71,16 @@ function saveTasks(tasks, callback) {
     }
   };
 
+  function isAuth(req,res,next){
+    if (req.cookies.loggedIn){
+        next();
+    } else {
+        res.redirect('/login');
+    }
+  }
 
 
-app.get('/', async (req, res) => {
+app.get('/', isAuth, async (req, res) => {
     const tasks = await getTasks();
     res.render('index', {
         layout: path.join('layout', 'main'),
