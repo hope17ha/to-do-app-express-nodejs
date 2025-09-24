@@ -36,23 +36,32 @@ app.get('/', isAuth, getCurrentUser, async (req, res) => {
      );
 });
 
-app.post('/toggle', async (req,res) => {
-    const tasks = await getTasks();
-    const task = tasks.find(task => task.id == Number(req.body.id));
-    if (task && task.completed !== undefined){
-        task.completed = !task.completed;
-        saveTasks(tasks, (error) => {
-            if (error){
-                return res.status(500).send('Failed to save task.');
-            }
-            res.redirect('/');
-        })
-    } else {
-        res.redirect('/');
-    }
-   
+app.post('/toggle', isAuth, getCurrentUser, async (req, res) => {
+    try {
+        const { id } = req.body;
+        const tasks = await getTasks();
 
+        const tasksGroup = tasks.find(group => group.userId === req.user.id);
+        if (!tasksGroup) {
+            return res.redirect('/');
+        }
+
+        const task = tasksGroup.tasks.find(task => task.id == id);
+        if (!task) {
+            return res.redirect('/');
+        }
+
+        task.completed = !task.completed;
+
+        await saveTasks(tasks);
+        return res.redirect('/');
+    } catch (err) {
+        console.error('Error in /toggle:', err);
+        return res.status(500).send('Internal Server Error');
+    }
 });
+
+
 
 app.post('/delete', async (req,res) => {
     const tasks = await getTasks();

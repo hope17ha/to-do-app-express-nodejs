@@ -13,17 +13,17 @@ async function getTasks() {
     }
 };
 
+async function saveTasks(tasks) {
+  try {
+    await fs.writeFile(dataPath, JSON.stringify(tasks, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Error saving tasks:', error);
+    throw error;
+  }
+}
 
-function saveTasks(tasks, callback) {
-    fs.writeFile(dataPath, JSON.stringify(tasks, null, 2), (err) => {
-      if (err) {
-        console.error('Error saving tasks:', err);
-        callback(err);
-      } else {
-        callback(null);
-      }
-    });
-  };
+module.exports = { saveTasks };
+
 
   async function getTaskByUserId(userId){
     const tasks = await getTasks();
@@ -33,4 +33,4 @@ function saveTasks(tasks, callback) {
   }
 
 
-  module.exports = { getTasks, saveTasks }
+  module.exports = { getTasks, saveTasks, getTaskByUserId }
