@@ -5,6 +5,7 @@ const path = require('path');
 const { v4: uuid } = require('uuid');
 const cookieParser = require('cookie-parser');
 const { isAuth } = require('./middlewares/isAuth.js')
+const { getCurrentUser } = require('./middlewares/getUser.js');
 const { getTasks, saveTasks } = require('./utils/tasks.js');
 const { getUsers , saveUsers } = require('./utils/users.js');
 const { hashPassword, comparePassword } = require('./utils/password.js')
@@ -21,20 +22,11 @@ app.use(cookieParser());
 
 
 
-app.get('/', isAuth, async (req, res) => {
-    const users = await getUsers();
+app.get('/', isAuth, getCurrentUser, async (req, res) => {
     
-    if (!req.cookies.username) {
-        return res.redirect('/login');
-    }
-    const user = users.find(user => user.username === req.cookies.username);
-
-    if (!user){
-        return res.redirect('/login');
-    }
     
     const tasks = await getTasks();
-    const userTasks = tasks.find(task => task.userId === user.id);
+    const userTasks = tasks.find(task => task.userId === req.user.id);
     
     res.render('index', {
         layout: path.join('layout', 'main'),

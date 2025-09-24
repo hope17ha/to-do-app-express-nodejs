@@ -25,5 +25,12 @@ function saveTasks(tasks, callback) {
     });
   };
 
+  async function getTaskByUserId(userId){
+    const tasks = await getTasks();
+    const userTask = tasks.find(task => task.userId === userId);
+
+    return userTask ? userTask.tasks : [];
+  }
+
 
   module.exports = { getTasks, saveTasks }
