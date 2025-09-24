@@ -10,5 +10,17 @@
     "username": "Ivanina",
     "email": "ivanina@gmail.com",
     "passwordHash": "$2b$10$FvCTVv7tAyHYFx90P9g8R.C.GvQPqF37mEYWQoeC.oaQI0d/shfFG"
+  },
+  {
+    "id": "1166b8c2-b0e0-49da-b048-5debb07da0c7",
+    "username": "Koni",
+    "email": "koni@abv.bg",
+    "passwordHash": "$2b$10$VNMWkgqBfREqzpEGq5Cl6ukMU1Kn8fWi.pX9QqC/aKA2QHmK4DsCm"
+  },
+  {
+    "id": "c70094e9-a78b-4810-8314-16ad45202c16",
+    "username": "Konstantina",
+    "email": "koni@gmail.com",
+    "passwordHash": "$2b$10$UkRaEMb8Q3RjXymXKvE0meUFUHWnlvt8ana1rD79dUT4W//Xql89i"
   }
 ]

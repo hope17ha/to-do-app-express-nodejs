@@ -6,8 +6,10 @@
 </section>
 
 <section class="task-list">
-    <ul>
+        {{#if hasTasks}}
         {{#each tasks}}
+    <ul>
+     
         <li>
             <form action="/toggle" method="POST">
                 <input type="hidden" name="id" value="{{this.id}}">
@@ -19,6 +21,9 @@
                 <button type="submit">Delete</button>
             </form>
         </li>
-        {{/each}}
     </ul>
+        {{/each}}
+          {{else}}
+         <p> No tasks yet! Start by adding one !</p>
+        {{/if}}
 </section>

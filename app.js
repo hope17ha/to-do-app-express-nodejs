@@ -81,10 +81,25 @@ function saveTasks(tasks, callback) {
 
 
 app.get('/', isAuth, async (req, res) => {
+    const users = await getUsers();
+    
+    if (!req.cookies.username) {
+        return res.redirect('/login');
+    }
+    const user = users.find(user => user.username === req.cookies.username);
+
+    if (!user){
+        return res.redirect('/login');
+    }
+    
     const tasks = await getTasks();
+    const userTasks = tasks.find(task => task.userId === user.id);
+    console.log(userTasks);
+    
     res.render('index', {
         layout: path.join('layout', 'main'),
-        tasks: tasks
+        tasks: userTasks ? userTasks.tasks : [],
+        hasTasks: userTasks && userTasks.tasks.length > 0
     }
      );
 });
@@ -175,6 +190,14 @@ app.post('/register', async (req,res) => {
     users.push(newUser);
 
     await saveUsers(users);
+
+    res.cookie('loggedIn', true, {
+        httpOnly: true
+    });
+    res.cookie('username', username, {
+        httpOnly: true
+    });
+
     res.redirect('/');
 
 });
@@ -204,6 +227,9 @@ app.post('/login', async (req,res) => {
         res.cookie('loggedIn', true, {
             httpOnly: true
         });
+        res.cookie('username', username, {
+            httpOnly: true
+        });
         res.redirect('/');
     } else {
         res.send('Wrong password!')
@@ -212,6 +238,7 @@ app.post('/login', async (req,res) => {
 
 app.get('/logout', isAuth, (req,res) => {
     res.clearCookie('loggedIn');
+    res.clearCookie('username');
     res.redirect('/login');
 })
 

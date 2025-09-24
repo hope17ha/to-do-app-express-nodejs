@@ -1,20 +1,32 @@
 [
   {
-    "id": "t1",
-    "userId": "u1",
-    "title": "Buy groceries",
-    "completed": false
+    "userId": "c1812493-b6e4-4b58-bb67-2c5d0e1f6227",
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Buy groceries",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "title": "Work email",
+        "completed": true
+      }
+    ]
   },
   {
-    "id": "t2",
-    "userId": "u1",
-    "title": "Help with homework",
-    "completed": true
-  },
-  {
-    "id": "t3",
-    "userId": "u2",
-    "title": "Send the email",
-    "completed": false
+    "userId": "cefb2708-71be-4fd4-aded-7160ff112009",
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Do the presentation",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "title": "Cook dinner",
+        "completed": false
+      }
+    ]
   }
 ]

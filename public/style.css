@@ -1,10 +1,17 @@
-/* Общи стилове */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+/* Reset & базови стилове */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
     color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -12,6 +19,28 @@ header {
     color: white;
     padding: 1rem;
     text-align: center;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+header nav ul li {
+    display: inline;
+}
+
+header nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+header nav a:hover {
+    text-decoration: underline;
 }
 
 main {
@@ -22,34 +51,16 @@ main {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-header nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-    padding: 0;
-}
 
-header nav ul li {
-    display: inline;
-}
-
-header nav a {
-    text-decoration: none;
-    color: #0077cc;
-}
-
-header nav a:hover {
-    text-decoration: underline;
-}
-
-/* Форма за добавяне на задачи */
 .add-task {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .add-task form {
     display: flex;
     gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .add-task input[type="text"] {
@@ -66,13 +77,13 @@ header nav a:hover {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .add-task button:hover {
     background-color: #45a049;
 }
 
-/* Списък със задачи */
 .task-list ul {
     list-style: none;
     padding: 0;
@@ -85,6 +96,8 @@ header nav a:hover {
     justify-content: space-between;
     padding: 0.75rem;
     border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .task-list li:last-child {
@@ -92,8 +105,10 @@ header nav a:hover {
 }
 
 .task-list form {
-    display: inline;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .task-list input[type="checkbox"] {
@@ -103,15 +118,14 @@ header nav a:hover {
 
 .task-list span {
     flex-grow: 1;
+    font-size: 1rem;
 }
 
-/* Стил за завършени задачи */
 .completed {
     text-decoration: line-through;
     color: #999;
 }
 
-/* Бутон за изтриване */
 .task-list button {
     background-color: #e74c3c;
     border: none;
@@ -119,30 +133,13 @@ header nav a:hover {
     padding: 0.4rem 0.8rem;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .task-list button:hover {
     background-color: #c0392b;
 }
 
-/* Reset & базови стилове */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-/* Центрирана auth форма */
 .auth-form {
     background-color: #fff;
     padding: 2.5rem;
@@ -150,6 +147,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    margin: 2rem auto;
 }
 
 .auth-form h2 {
@@ -209,11 +207,10 @@ body {
     text-decoration: underline;
 }
 
-
-/* Footer */
 footer {
     text-align: center;
-    margin-top: 3rem;
+    margin-top: auto;
+    padding: 1rem;
     font-size: 0.9rem;
     color: #888;
 }
