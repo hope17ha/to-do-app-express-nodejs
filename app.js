@@ -210,7 +210,10 @@ app.post('/login', async (req,res) => {
     }
 });
 
-
+app.get('/logout', isAuth, (req,res) => {
+    res.clearCookie('loggedIn');
+    res.redirect('/login');
+})
 
 
 
