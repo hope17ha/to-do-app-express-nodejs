@@ -6,7 +6,7 @@ const { v4: uuid } = require('uuid');
 const cookieParser = require('cookie-parser');
 const { isAuth } = require('./middlewares/isAuth.js')
 const { getCurrentUser } = require('./middlewares/getUser.js');
-const { getTasks, saveTasks } = require('./utils/tasks.js');
+const { getTasks, saveTasks, getTaskByUserId } = require('./utils/tasks.js');
 const { getUsers , saveUsers } = require('./utils/users.js');
 const { hashPassword, comparePassword } = require('./utils/password.js')
 
@@ -25,13 +25,12 @@ app.use(cookieParser());
 app.get('/', isAuth, getCurrentUser, async (req, res) => {
     
     
-    const tasks = await getTasks();
-    const userTasks = tasks.find(task => task.userId === req.user.id);
+    const userTasks = await getTaskByUserId(req.user.id);
     
     res.render('index', {
         layout: path.join('layout', 'main'),
-        tasks: userTasks ? userTasks.tasks : [],
-        hasTasks: userTasks && userTasks.tasks.length > 0
+        tasks: userTasks ? userTasks : [],
+        hasTasks: userTasks && userTasks.length > 0
     }
      );
 });
@@ -80,12 +79,16 @@ app.post('/delete', async (req,res) => {
 
 })
 
-app.post('/add', async (req,res) => {
-    const tasks = await getTasks();
-    const lastId = tasks ? tasks.length : 0;
+app.post('/add', isAuth, getCurrentUser, async (req,res) => {
+
+    const userTasks = await getTaskByUserId(req.user.id);
+    console.log(userTasks);
+
+   
+    const lastId = userTasks ? userTasks.length : 0;
     const taskToAdd = { id: lastId + 1 , title: req.body.title , completed: false};
 
-    const updatedTasks = [...tasks, taskToAdd];
+    const updatedTasks = [...userTasks, taskToAdd];
     saveTasks(updatedTasks, (error) => {
         if (error) {
             return res.status(500).send('Failed to save task.');
