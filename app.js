@@ -6,6 +6,7 @@ const fs = require('fs').promises;
 const { error } = require('console');
 const { v4: uuid } = require('uuid');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = 3000;
@@ -15,6 +16,7 @@ app.set('view engine', 'hbs');
 app.set('views', './views');
 app.use(express.urlencoded ({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 
 const dataPath = path.join(__dirname, 'data', 'tasks.json');
 const userPath = path.join(__dirname, 'data', 'users.json');
@@ -67,8 +69,7 @@ function saveTasks(tasks, callback) {
     } catch (error) {
         console.error('Error saving user:', error);
     }
-  }
-
+  };
 
 
 
@@ -193,6 +194,9 @@ app.post('/login', async (req,res) => {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (isMatch){
+        res.cookie('loggedIn', true, {
+            httpOnly: true
+        });
         res.redirect('/');
     } else {
         res.send('Wrong password!')
