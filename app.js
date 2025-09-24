@@ -2,11 +2,12 @@
 
 const express = require('express');
 const path = require('path');
-const fs = require('fs').promises;
-const { error } = require('console');
 const { v4: uuid } = require('uuid');
-const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
+const { isAuth } = require('./middlewares/isAuth.js')
+const { getTasks, saveTasks } = require('./utils/tasks.js');
+const { getUsers , saveUsers } = require('./utils/users.js');
+const { hashPassword, comparePassword } = require('./utils/password.js')
 
 const app = express();
 const port = 3000;
@@ -18,66 +19,6 @@ app.use(express.urlencoded ({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
-const dataPath = path.join(__dirname, 'data', 'tasks.json');
-const userPath = path.join(__dirname, 'data', 'users.json');
-const fsPromises = require('fs').promises;
-const newId = uuid();
-
-
-async function hashPassword(password) {
-    const hash = await bcrypt.hash(password, 10);
-    return hash;
-}
-
-
-async function getTasks() {
-    try {
-        const data = await fsPromises.readFile(dataPath, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error reading tasks:', error);
-        return [];
-    }
-}
-
-
-function saveTasks(tasks, callback) {
-    fs.writeFile(dataPath, JSON.stringify(tasks, null, 2), (err) => {
-      if (err) {
-        console.error('Error saving tasks:', err);
-        callback(err);
-      } else {
-        callback(null);
-      }
-    });
-  };
-
-  async function getUsers(){
-    try {
-        const users = await fsPromises.readFile(userPath, 'utf8');
-        return JSON.parse(users);
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        return [];
-    }
-  
-  };
-  
-  async function saveUsers(users) {
-    try {
-        await fs.writeFile(userPath, JSON.stringify(users, null, 2))
-    } catch (error) {
-        console.error('Error saving user:', error);
-    }
-  };
-
-  function isAuth(req,res,next){
-    if (req.cookies.loggedIn){
-        next();
-    } else {
-        res.redirect('/login');
-    }
-  }
 
 
 app.get('/', isAuth, async (req, res) => {
@@ -94,7 +35,6 @@ app.get('/', isAuth, async (req, res) => {
     
     const tasks = await getTasks();
     const userTasks = tasks.find(task => task.userId === user.id);
-    console.log(userTasks);
     
     res.render('index', {
         layout: path.join('layout', 'main'),
@@ -221,7 +161,7 @@ app.post('/login', async (req,res) => {
     };
     
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    const isMatch = await comparePassword(password, user.passwordHash);
 
     if (isMatch){
         res.cookie('loggedIn', true, {
