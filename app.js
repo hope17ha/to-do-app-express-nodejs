@@ -21,6 +21,7 @@ const userPath = path.join(__dirname, 'data', 'users.json');
 const fsPromises = require('fs').promises;
 const newId = uuid();
 
+
 async function hashPassword(password) {
     const hash = await bcrypt.hash(password, 10);
     return hash;
@@ -168,7 +169,35 @@ app.post('/register', async (req,res) => {
     await saveUsers(users);
     res.redirect('/');
 
-})
+});
+
+app.get('/login', (req,res) => {
+    res.render('login', {
+        layout: path.join('layout', 'main')
+    })
+});
+
+app.post('/login', async (req,res) => {
+    const {username, password} = req.body;
+
+    const users = await getUsers();
+
+    const user = users.find(user => user.username === username);
+
+    if (!user){
+        res.send('User with this username does not exist!');
+        return;
+    };
+    
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+
+    if (isMatch){
+        res.redirect('/');
+    } else {
+        res.send('Wrong password!')
+    }
+});
 
 
 
