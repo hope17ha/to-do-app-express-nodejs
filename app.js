@@ -2,7 +2,7 @@
 
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises;
 const { error } = require('console');
 const { v4: uuid } = require('uuid');
 const bcrypt = require('bcrypt');
@@ -23,7 +23,7 @@ const newId = uuid();
 
 async function hashPassword(password) {
     const hash = await bcrypt.hash(password, 10);
-    console.log('Hashed password:', hash);
+    return hash;
 }
 
 
@@ -48,6 +48,25 @@ function saveTasks(tasks, callback) {
       }
     });
   };
+
+  async function getUsers(){
+    try {
+        const users = await fsPromises.readFile(userPath, 'utf8');
+        return JSON.parse(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return [];
+    }
+  
+  };
+  
+  async function saveUsers(users) {
+    try {
+        await fs.writeFile(userPath, JSON.stringify(users, null, 2))
+    } catch (error) {
+        console.error('Error saving user:', error);
+    }
+  }
 
 
 
@@ -116,6 +135,39 @@ app.get('/register', (req,res) => {
     res.render('register', {
         layout: path.join('layout', 'main')
     })
+});
+
+app.post('/register', async (req,res) => {
+  
+    const {username, email, password, confirmPassword} = req.body;
+
+    if (password !== confirmPassword){
+        res.send("Passwords don't match!");
+        return;
+    };
+
+    const users = await getUsers();
+
+    if (users.find(user => user.username === username || user.email === email )){
+        res.send('User with this email or username already exists!')
+        return;
+    };
+
+    const hashedPassword = await hashPassword(password);
+    console.log(hashedPassword);
+
+    const newUser = {
+        id: uuid(),
+        username: username,
+        email: email,
+        passwordHash: hashedPassword
+    };
+
+    users.push(newUser);
+
+    await saveUsers(users);
+    res.redirect('/');
+
 })
 
 
