@@ -81,20 +81,29 @@ app.post('/delete', async (req,res) => {
 
 app.post('/add', isAuth, getCurrentUser, async (req,res) => {
 
-    const userTasks = await getTaskByUserId(req.user.id);
-    console.log(userTasks);
+    const tasks = await getTasks();
 
-   
-    const lastId = userTasks ? userTasks.length : 0;
-    const taskToAdd = { id: lastId + 1 , title: req.body.title , completed: false};
+    let taskGroup = tasks.find(group => group.userId === req.user.id)
+    
+    if (!taskGroup){
+        taskGroup = {
+            userId: req.body.id,
+            tasks: []
+        };
+        tasks.push(taskGroup);
+    };
 
-    const updatedTasks = [...userTasks, taskToAdd];
-    saveTasks(updatedTasks, (error) => {
-        if (error) {
-            return res.status(500).send('Failed to save task.');
-        }
-        res.redirect('/');
-    });
+    const lastId = taskGroup.tasks.length > 0 ? taskGroup.tasks.length + 1 : 0;
+
+    const newTask = {
+        id: lastId,
+        title: req.body.title,
+        completed: false
+    };
+
+    taskGroup.tasks.push(newTask);
+    await saveTasks(tasks);
+    res.redirect('/');
     
 
 });
@@ -102,7 +111,7 @@ app.post('/add', isAuth, getCurrentUser, async (req,res) => {
 app.get('/register', (req,res) => {
     res.render('register', {
         layout: path.join('layout', 'main')
-    })
+    });
 });
 
 app.post('/register', async (req,res) => {
