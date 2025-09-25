@@ -6,6 +6,12 @@
 </section>
 
 <section class="task-list">
+    <section class="task-filters">
+    <a href="/">All</a> |
+    <a href="/?filter=active">Active</a> |
+    <a href="/?filter=completed">Completed</a>
+    </section>
+
         {{#if hasTasks}}
         {{#each tasks}}
     <ul>

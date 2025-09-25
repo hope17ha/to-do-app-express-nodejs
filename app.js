@@ -25,7 +25,15 @@ app.use(cookieParser());
 app.get('/', isAuth, getCurrentUser, async (req, res) => {
     
     
-    const userTasks = await getTaskByUserId(req.user.id);
+    let userTasks = await getTaskByUserId(req.user.id);
+
+    const filter = req.query.filter;
+
+    if (filter === 'completed'){
+        userTasks = userTasks.filter(task => task.completed === true);
+    } else if (filter === 'active'){
+        userTasks = userTasks.filter(task => task.completed === false);
+    };
     
     res.render('index', {
         layout: path.join('layout', 'main'),
@@ -77,7 +85,7 @@ app.post('/delete', isAuth, getCurrentUser, async (req,res) => {
     if (!taskForDel){
         res.redirect('/');
     };
-    
+
     const idToDel = taskForDel.id;
 
     const updatedTasks = taskGroup.tasks.filter( task => task.id !== idToDel);
@@ -88,11 +96,8 @@ app.post('/delete', isAuth, getCurrentUser, async (req,res) => {
 
     res.redirect('/');
     
-    
 
-    
-
-})
+});
 
 app.post('/add', isAuth, getCurrentUser, async (req,res) => {
 
