@@ -9,6 +9,8 @@ const { getCurrentUser } = require('./middlewares/getUser.js');
 const { getTasks, saveTasks, getTaskByUserId } = require('./utils/tasks.js');
 const { getUsers , saveUsers } = require('./utils/users.js');
 const { hashPassword, comparePassword } = require('./utils/password.js')
+require ('./helpers/equals.js');
+
 
 const app = express();
 const port = 3000;
@@ -38,7 +40,8 @@ app.get('/', isAuth, getCurrentUser, async (req, res) => {
     res.render('index', {
         layout: path.join('layout', 'main'),
         tasks: userTasks ? userTasks : [],
-        hasTasks: userTasks && userTasks.length > 0
+        hasTasks: userTasks && userTasks.length > 0,
+        filter: filter || 'all'
     }
      );
 });

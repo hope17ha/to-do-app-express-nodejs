@@ -7,9 +7,9 @@
 
 <section class="task-list">
     <section class="task-filters">
-    <a href="/">All</a> |
-    <a href="/?filter=active">Active</a> |
-    <a href="/?filter=completed">Completed</a>
+    <a href="/" class="{{#if (equals filter 'all')}} active {{/if}}">All</a> |
+    <a href="/?filter=active" class="{{#if (equals filter 'active')}} active {{/if}}" >Active</a> |
+    <a href="/?filter=completed" class="{{#if (equals filter 'completed')}} active {{/if}}" >Completed</a>
     </section>
 
         {{#if hasTasks}}

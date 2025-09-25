@@ -99,6 +99,12 @@ main {
 .task-filters a:hover {
     text-decoration: underline;
 }
+.task-filters a.active {
+    font-weight: bold;
+    color: #4CAF50;
+    text-decoration: underline;
+}
+
 
 .task-list ul {
     list-style: none;
