@@ -62,19 +62,34 @@ app.post('/toggle', isAuth, getCurrentUser, async (req, res) => {
 
 
 
-app.post('/delete', async (req,res) => {
+app.post('/delete', isAuth, getCurrentUser, async (req,res) => {
+
     const tasks = await getTasks();
-    const taskForDel = tasks.find ( task => task.id == Number(req.body.id))
+
+    const taskGroup = tasks.find(group => group.userId === req.user.id);
+    
+    if (!taskGroup){
+        res.redirect('/');
+    };
+
+    const taskForDel = taskGroup.tasks.find ( task => task.id == Number(req.body.id))
+
+    if (!taskForDel){
+        res.redirect('/');
+    };
+    
     const idToDel = taskForDel.id;
 
-    const updatedTasks = tasks.filter( task => task.id !== idToDel);
+    const updatedTasks = taskGroup.tasks.filter( task => task.id !== idToDel);
 
-    saveTasks(updatedTasks, (error) => {
-        if (error){
-            return res.status(500).send('Failed to delete task.')
-        } 
-        res.redirect('/');
-    });
+    taskGroup.tasks = updatedTasks;
+
+    await saveTasks(tasks);
+
+    res.redirect('/');
+    
+    
+
     
 
 })
