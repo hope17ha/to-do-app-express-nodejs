@@ -4,7 +4,8 @@ async function getCurrentUser(req, res, next) {
     const username = req.cookies.username;
 
     if (!username) {
-        return res.redirect('/login');
+        req.user = null;
+        return next();
     }
 
     const users = await getUsers();
@@ -14,7 +15,7 @@ async function getCurrentUser(req, res, next) {
         return res.redirect('/login');
     }
 
-    req.user = user;
+    req.user = user || null;
     next();
 };
 

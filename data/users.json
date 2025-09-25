@@ -28,5 +28,11 @@
     "username": "Ivanina23",
     "email": "ivanina@abv.bg",
     "passwordHash": "$2b$10$4Esv5SzkpKROvKJ2Ns6J6eh6zhwNucRdGfkftUKmavPfYyLeCd0le"
+  },
+  {
+    "id": "58add18e-c456-4c86-b42a-bf1119c89dbd",
+    "username": "Noah",
+    "email": "noah@gmail.com",
+    "passwordHash": "$2b$10$n.lUT9p2QNkD0U1Xc6GuYebzvT0Bt0Gjlro0TYhhOt8dISEFiA352"
   }
 ]

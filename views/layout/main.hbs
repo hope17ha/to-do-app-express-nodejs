@@ -10,9 +10,13 @@
         <h1>Welcome to Your To-Do list! Please login or register to start!</h1>
         <nav>
             <ul>
+               {{#if user}}
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/logout">Logout</a></li>
+               {{else}}
                 <li><a href="/login">Login</a></li>
                 <li><a href="/register">Register</a></li>
-                <li><a href="/logout">Logout</a></li>
+                {{/if}}
             </ul>
         </nav>
     </header>

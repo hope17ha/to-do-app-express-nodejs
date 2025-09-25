@@ -22,9 +22,16 @@ app.use(express.urlencoded ({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
+app.use(getCurrentUser);
+
+app.use(async (req,res,next) => {
+    res.locals.user = req.user || null;
+    next();
+});
 
 
-app.get('/', isAuth, getCurrentUser, async (req, res) => {
+
+app.get('/', isAuth, async (req, res) => {
     
     
     let userTasks = await getTaskByUserId(req.user.id);
@@ -46,7 +53,7 @@ app.get('/', isAuth, getCurrentUser, async (req, res) => {
      );
 });
 
-app.post('/toggle', isAuth, getCurrentUser, async (req, res) => {
+app.post('/toggle', isAuth, async (req, res) => {
     try {
         const { id } = req.body;
         const tasks = await getTasks();
@@ -73,7 +80,7 @@ app.post('/toggle', isAuth, getCurrentUser, async (req, res) => {
 
 
 
-app.post('/delete', isAuth, getCurrentUser, async (req,res) => {
+app.post('/delete', isAuth, async (req,res) => {
 
     const tasks = await getTasks();
 
@@ -102,7 +109,7 @@ app.post('/delete', isAuth, getCurrentUser, async (req,res) => {
 
 });
 
-app.post('/add', isAuth, getCurrentUser, async (req,res) => {
+app.post('/add', isAuth, async (req,res) => {
 
     const tasks = await getTasks();
 
@@ -216,6 +223,12 @@ app.get('/logout', isAuth, (req,res) => {
     res.clearCookie('loggedIn');
     res.clearCookie('username');
     res.redirect('/login');
+});
+
+app.get('/profile', isAuth, getCurrentUser, (req,res) => {
+    res.render('profile', {
+        layout: path.join('layout', 'main')
+    })
 })
 
 
