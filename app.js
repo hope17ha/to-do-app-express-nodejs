@@ -113,11 +113,12 @@ app.post('/add', isAuth, async (req,res) => {
 
     const tasks = await getTasks();
 
+
     let taskGroup = tasks.find(group => group.userId === req.user.id)
     
     if (!taskGroup){
         taskGroup = {
-            userId: req.body.id,
+            userId: req.user.id,
             tasks: []
         };
         tasks.push(taskGroup);
@@ -225,9 +226,17 @@ app.get('/logout', isAuth, (req,res) => {
     res.redirect('/login');
 });
 
-app.get('/profile', isAuth, getCurrentUser, (req,res) => {
+app.get('/profile', isAuth, getCurrentUser, async (req,res) => {
+    const userTasks = await getTaskByUserId(req.user.id);
+
+    const completedTasks = userTasks.filter( task => task.completed);
+    
     res.render('profile', {
-        layout: path.join('layout', 'main')
+        layout: path.join('layout', 'main'),
+        user: req.user,
+        tasks: userTasks,
+        completedTasks: completedTasks,
+
     })
 })
 

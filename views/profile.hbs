@@ -14,10 +14,10 @@
     </div>
 
     <div class="profile-info">
-      <p><strong>Username:</strong> JohnDoe</p>
-      <p><strong>Email:</strong> johndoe@example.com</p>
-      <p><strong>Tasks:</strong> 12</p>
-      <p><strong>Joined:</strong> September 2025</p>
+      <p><strong>Username:</strong> {{user.username}}</p>
+      <p><strong>Email:</strong> {{user.email}}</p>
+      <p><strong>All Tasks:</strong> {{tasks.length}}</p>
+      <p><strong>Completed:</strong> {{completedTasks.length}}</p>
     </div>
 
     <a href="/logout" class="logout-button">Logout</a>
