@@ -7,7 +7,11 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Your To-Do list! Please login or register to start!</h1>
+        {{#if user}}
+        <h1>Welcome to Your To-Do list!</h1>
+        {{else}}
+         <h1>Welcome to Your To-Do list! Please login or register to start!</h1>
+         {{/if}}
         <nav>
             <ul>
                {{#if user}}
