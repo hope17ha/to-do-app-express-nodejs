@@ -10,6 +10,7 @@ const { getTasks, saveTasks, getTaskByUserId } = require('./utils/tasks.js');
 const { getUsers , saveUsers } = require('./utils/users.js');
 const { hashPassword, comparePassword } = require('./utils/password.js');
 const { execArgv } = require('process');
+const { log } = require('util');
 require ('./helpers/equals.js');
 
 
@@ -316,6 +317,23 @@ app.post('/profile-edit', isAuth, async (req,res) => {
         httpOnly: true
     });
     res.redirect('/');
+});
+
+app.post('/delete-profile', isAuth, async (req,res) => {
+    let users = await getUsers();
+    const currentUser = users.find(user => user.id == req.user.id);
+
+    if (!users || !currentUser){
+        return res.redirect('/');
+    };
+
+    users = users.filter(user => user !== currentUser);
+    await saveUsers(users);
+
+    res.clearCookie('loggedIn');
+    res.clearCookie('username');
+    res.redirect('/login');
+
 })
 
 
