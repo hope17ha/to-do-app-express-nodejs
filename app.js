@@ -196,15 +196,19 @@ app.post('/register', async (req,res) => {
     const {username, email, password, confirmPassword} = req.body;
 
     if (password !== confirmPassword){
-        res.send("Passwords don't match!");
-        return;
+        return res.render('register', {
+            layout: path.join('layout', 'main'),
+            error: "Passwords don't match!"
+        })
     };
 
     const users = await getUsers();
 
     if (users.find(user => user.username === username || user.email === email )){
-        res.send('User with this email or username already exists!')
-        return;
+        return res.render('register', {
+            layout: path.join('layout', 'main'),
+            error: "User with such username or email already exist!"
+        })
     };
 
     const hashedPassword = await hashPassword(password);
@@ -245,8 +249,10 @@ app.post('/login', async (req,res) => {
     const user = users.find(user => user.username === username);
 
     if (!user){
-        res.send('User with this username does not exist!');
-        return;
+        return res.render('login', {
+            layout: path.join('layout', 'main'),
+            error: "User with such username doesn't exist!"
+        })
     };
     
 
@@ -261,7 +267,10 @@ app.post('/login', async (req,res) => {
         });
         res.redirect('/');
     } else {
-        res.send('Wrong password!')
+        return res.render('login', {
+            layout: path.join('layout', 'main'),
+            error: "Wrong password!"
+        })
     }
 });
 

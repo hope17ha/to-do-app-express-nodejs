@@ -8,6 +8,9 @@
 <body>
     <section class="auth-form">
         <h2>Login</h2>
+        {{#if error}}
+        <p style="color:red">{{error}}</p>
+        {{/if}}
         <form action="/login" method="POST">
             <label for="username">Username</label>
             <input type="text" name="username" id="username" required>
