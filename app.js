@@ -8,7 +8,8 @@ const { isAuth } = require('./middlewares/isAuth.js')
 const { getCurrentUser } = require('./middlewares/getUser.js');
 const { getTasks, saveTasks, getTaskByUserId } = require('./utils/tasks.js');
 const { getUsers , saveUsers } = require('./utils/users.js');
-const { hashPassword, comparePassword } = require('./utils/password.js')
+const { hashPassword, comparePassword } = require('./utils/password.js');
+const { execArgv } = require('process');
 require ('./helpers/equals.js');
 
 
@@ -281,9 +282,41 @@ app.get('/profile', isAuth, getCurrentUser, async (req,res) => {
         tasks: userTasks,
         completedTasks: completedTasks,
 
-    })
-})
+    });
+});
 
+app.get('/profile-edit', isAuth, getCurrentUser, async (req,res) => {
+    
+    res.render('profile-edit', {
+        layout: path.join('layout', 'main'),
+        user: req.user
+    })
+
+});
+
+app.post('/profile-edit', isAuth, async (req,res) => {
+
+    const {username, email} = req.body;
+
+    const users = await getUsers();
+    const currentUser = users.find(user => user.id == req.user.id);
+
+    if (!users || !currentUser){
+        return res.redirect('/');
+    }
+
+    currentUser.username = username;
+    currentUser.email = email;
+
+    await saveUsers(users);
+    res.cookie('username', username, {
+        httpOnly: true
+    });
+    res.cookie('loggedIn', true, {
+        httpOnly: true
+    });
+    res.redirect('/');
+})
 
 
 

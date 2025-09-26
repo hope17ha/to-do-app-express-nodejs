@@ -13,6 +13,18 @@ async function getUsers(){
     }
   
   };
+
+  async function getCurrentUser(userId){
+    try {
+        const users = await getUsers();
+        const user = users.find(user => user.id == userId);
+        return user || null;
+
+    } catch (error) {
+        console.error('Error saving user:', error);
+        return null;
+    }
+  };
   
   async function saveUsers(users) {
     try {
@@ -22,4 +34,4 @@ async function getUsers(){
     }
   };
 
-  module.exports = { getUsers , saveUsers };
+  module.exports = { getUsers , saveUsers, getCurrentUser };
