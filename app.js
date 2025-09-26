@@ -208,7 +208,6 @@ app.post('/register', async (req,res) => {
     };
 
     const hashedPassword = await hashPassword(password);
-    console.log(hashedPassword);
 
     const newUser = {
         id: uuid(),
@@ -297,7 +296,7 @@ app.get('/profile-edit', isAuth, getCurrentUser, async (req,res) => {
 
 app.post('/profile-edit', isAuth, async (req,res) => {
 
-    const {username, email} = req.body;
+    const {username, email, password, confirmPassword} = req.body;
 
     const users = await getUsers();
     const currentUser = users.find(user => user.id == req.user.id);
@@ -309,6 +308,20 @@ app.post('/profile-edit', isAuth, async (req,res) => {
     currentUser.username = username;
     currentUser.email = email;
 
+    if (password !== confirmPassword){
+        return res.render('profile-edit', {
+            layout: path.join('layout', 'main'),
+            error: "Passwords don't match!",
+            user: req.user
+        })
+    };
+
+    if (password){   
+
+     currentUser.passwordHash = await hashPassword(password);
+     
+    };
+    
     await saveUsers(users);
     res.cookie('username', username, {
         httpOnly: true
