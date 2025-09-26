@@ -1,0 +1,6 @@
+<section class="edit-task">
+    <form action="/edit/{{task.id}}" method="POST">
+        <input type="text" name="title" value="{{task.title}}" required>
+        <button type="submit">Save</button>
+    </form>
+</section>

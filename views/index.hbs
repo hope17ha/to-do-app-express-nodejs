@@ -22,6 +22,8 @@
                 <input type="checkbox" name="completed" onchange="this.form.submit()" {{#if this.completed}} checked {{/if}}/>
                 <span class="{{#if this.completed}} completed {{/if}}">{{this.title}}</span>
             </form>
+               <a href="/edit/{{this.id}}" class="edit-btn">Edit</a>
+
             <form action="/delete" method="POST" style="display:inline;">
                 <input type="hidden" name="id" value="{{this.id}}">
                 <button type="submit">Delete</button>

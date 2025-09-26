@@ -139,6 +139,50 @@ app.post('/add', isAuth, async (req,res) => {
 
 });
 
+app.get('/edit/:id', isAuth, async (req,res) => {
+    const userTasks = await getTaskByUserId(req.user.id);
+    
+    if (!userTasks){
+        res.redirect('/');
+    };
+
+    const currentTask = userTasks.find(task => task.id == req.params.id);
+
+    if (!currentTask){
+        res.redirect('/');
+    };
+
+    res.render('edit', {
+        layout: path.join('layout', 'main'),
+        task: currentTask
+
+    });
+
+
+});
+
+app.post('/edit/:id', isAuth, async (req,res) => {
+    const tasks = await getTasks();
+
+    const userTasks = tasks.find(group => group.userId === req.user.id);
+
+    if (!userTasks){
+        res.redirect('/');
+    };
+
+    const taskToEdit = userTasks.tasks.find(task => task.id == req.params.id);
+
+    if (!taskToEdit){
+        res.redirect('/');
+    };
+
+    taskToEdit.title = req.body.title;
+
+    await saveTasks(tasks);
+    res.redirect('/');
+    
+});
+
 app.get('/register', (req,res) => {
     res.render('register', {
         layout: path.join('layout', 'main')
